@@ -15,11 +15,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             flex-direction: column;
             color: white;
             padding: 1rem;
+        }
+
+        /* Container for both header images */
+        .header-images-container {
+            display: flex;
+            flex-direction: column; /* Stack vertically on small screens */
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        @media (min-width: 768px) {
+            .header-images-container {
+                flex-direction: row; /* Display side-by-side on medium screens and up */
+                justify-content: center;
+            }
+        }
+
+        #header-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        #gif-placeholder {
+            height: auto;
+            object-fit: contain;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (min-width: 768px) {
+            #header-image {
+                width: 60%; /* Adjusted width for side-by-side view */
+            }
         }
 
         canvas {
@@ -29,15 +68,6 @@
             max-width: 100%;
             height: auto;
             border: none;
-        }
-
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: #ffffff;
-            font-family: 'Dancing Script', cursive;
         }
 
         .container {
@@ -53,17 +83,17 @@
             body {
                 padding: 0.5rem;
             }
-            h1 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
         }
     </style>
 </head>
 <body>
+    <div class="header-images-container">
+        <img id="header-image" src="WhatsApp Image 2025-09-04 at 15.29.08_2045992e.png" alt="Code a Pookalam Header">
+        <!-- Placeholder for the GIF. Replace the src with your GIF URL. -->
+        <img id="gif-placeholder" src="1.gif" alt="GIF Placeholder">
+    </div>
+    
     <div class="container">
-        <h1>CODE A POOKALAM</h1>
-        <img src="1.gif" alt="Pookalam" style="width: 200px; height: auto; border-radius: 0.5rem; margin-bottom: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         <canvas id="pookalamCanvas"></canvas>
     </div>
 
@@ -71,36 +101,45 @@
         window.onload = function() {
             const canvas = document.getElementById('pookalamCanvas');
             const ctx = canvas.getContext('2d');
-            const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7);
-            canvas.width = size;
-            canvas.height = size;
+            
+            function resizeCanvas() {
+                const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7);
+                canvas.width = size;
+                canvas.height = size;
+                drawPookalam();
+            }
+
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
 
             function drawPookalam() {
                 // Clear the canvas for redrawing
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const newCenterX = canvas.width / 2;
+                const newCenterY = canvas.height / 2;
+                const size = Math.min(canvas.width, canvas.height);
 
                 // Layer 1: Outer Diamond Ring (Red, Orange, Yellow)
-                drawDiamondRing(centerX, centerY, size * 0.45, size * 0.35, 32, ['#A1172A', '#E04E26', '#FF9F1C', '#FFC93C']);
+                drawDiamondRing(newCenterX, newCenterY, size * 0.45, size * 0.35, 32, ['#A1172A', '#E04E26', '#FF9F1C', '#FFC93C']);
                 
                 // Layer 2: Dark Red Ring
-                drawRing(centerX, centerY, size * 0.35, size * 0.32, '#5A1E24');
+                drawRing(newCenterX, newCenterY, size * 0.35, size * 0.32, '#5A1E24');
                 
                 // Layer 3: Yellow Diamond Star
-                drawDiamondStar(centerX, centerY, size * 0.32, size * 0.22, 8, ['#FFD700', '#FFC93C']);
+                drawDiamondStar(newCenterX, newCenterY, size * 0.32, size * 0.22, 8, ['#FFD700', '#FFC93C']);
                 
                 // Layer 4: Pink and Off-White Star
-                drawPinkAndWhiteStar(centerX, centerY, size * 0.22, size * 0.17, 8, ['#FFC0CB', '#fefae0']);
+                drawPinkAndWhiteStar(newCenterX, newCenterY, size * 0.22, size * 0.17, 8, ['#FFC0CB', '#fefae0']);
 
                 // Layer 5: Dark Green Ring
-                drawRing(centerX, centerY, size * 0.17, size * 0.16, '#385A21');
+                drawRing(newCenterX, newCenterY, size * 0.17, size * 0.16, '#385A21');
                 
                 // Layer 6: Inner Pattern (Pink & Yellow Triangles)
-                drawInnerTriangleStar(centerX, centerY, size * 0.16, size * 0.10, 8, ['#FFC0CB', '#FFD700']);
+                drawInnerTriangleStar(newCenterX, newCenterY, size * 0.16, size * 0.10, 8, ['#FFC0CB', '#FFD700']);
                 
                 // Layer 7: Central Pattern
-                drawCentralDesign(centerX, centerY, size * 0.10);
+                drawCentralDesign(newCenterX, newCenterY, size * 0.10);
             }
             
             // Function to draw the outer ring of interlocking diamonds
@@ -247,14 +286,25 @@
                 ctx.restore();
             }
 
-            drawPookalam();
+            function updateGifSize() {
+                const headerImage = document.getElementById('header-image');
+                const gifPlaceholder = document.getElementById('gif-placeholder');
+                
+                if (headerImage && gifPlaceholder) {
+                    const imageHeight = headerImage.offsetHeight;
+                    gifPlaceholder.style.height = `${imageHeight}px`;
+                    gifPlaceholder.style.width = `${imageHeight}px`;
+                }
+            }
             
-            // Re-draw on window resize to maintain responsiveness
+            // Initial call to set the size on load
+            updateGifSize();
+            resizeCanvas();
+            
+            // Re-draw and resize on window resize to maintain responsiveness
             window.addEventListener('resize', () => {
-                const newSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7);
-                canvas.width = newSize;
-                canvas.height = newSize;
-                drawPookalam();
+                updateGifSize();
+                resizeCanvas();
             });
         };
     </script>
