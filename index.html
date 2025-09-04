@@ -1,0 +1,262 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Pookalam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000000;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            color: white;
+            padding: 1rem;
+        }
+
+        canvas {
+            background-color: #000000;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            max-width: 100%;
+            height: auto;
+            border: none;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CODE A POOKALAM</h1>
+        <img src="1.gif" alt="Pookalam" style="width: 200px; height: auto; border-radius: 0.5rem; margin-bottom: 1rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <canvas id="pookalamCanvas"></canvas>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const canvas = document.getElementById('pookalamCanvas');
+            const ctx = canvas.getContext('2d');
+            const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7);
+            canvas.width = size;
+            canvas.height = size;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            function drawPookalam() {
+                // Clear the canvas for redrawing
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Layer 1: Outer Diamond Ring (Red, Orange, Yellow)
+                drawDiamondRing(centerX, centerY, size * 0.45, size * 0.35, 32, ['#A1172A', '#E04E26', '#FF9F1C', '#FFC93C']);
+                
+                // Layer 2: Dark Red Ring
+                drawRing(centerX, centerY, size * 0.35, size * 0.32, '#5A1E24');
+                
+                // Layer 3: Yellow Diamond Star
+                drawDiamondStar(centerX, centerY, size * 0.32, size * 0.22, 8, ['#FFD700', '#FFC93C']);
+                
+                // Layer 4: Pink and Off-White Star
+                drawPinkAndWhiteStar(centerX, centerY, size * 0.22, size * 0.17, 8, ['#FFC0CB', '#fefae0']);
+
+                // Layer 5: Dark Green Ring
+                drawRing(centerX, centerY, size * 0.17, size * 0.16, '#385A21');
+                
+                // Layer 6: Inner Pattern (Pink & Yellow Triangles)
+                drawInnerTriangleStar(centerX, centerY, size * 0.16, size * 0.10, 8, ['#FFC0CB', '#FFD700']);
+                
+                // Layer 7: Central Pattern
+                drawCentralDesign(centerX, centerY, size * 0.10);
+            }
+            
+            // Function to draw the outer ring of interlocking diamonds
+            function drawDiamondRing(x, y, outerRadius, innerRadius, numDiamonds, colors) {
+                const angleIncrement = (Math.PI * 2) / numDiamonds;
+                for (let i = 0; i < numDiamonds; i++) {
+                    const angle = i * angleIncrement;
+                    const nextAngle = (i + 1) * angleIncrement;
+                    
+                    const colorIndex = i % colors.length;
+                    ctx.fillStyle = colors[colorIndex];
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle), y + innerRadius * Math.sin(angle));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle + angleIncrement / 2), y + outerRadius * Math.sin(angle + angleIncrement / 2));
+                    ctx.lineTo(x + innerRadius * Math.cos(nextAngle), y + innerRadius * Math.sin(nextAngle));
+                    ctx.lineTo(x, y);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // Function to draw a simple colored ring
+            function drawRing(x, y, outerRadius, innerRadius, color) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, outerRadius, 0, Math.PI * 2);
+                ctx.arc(x, y, innerRadius, 0, Math.PI * 2, true);
+                ctx.fill();
+            }
+
+            // Function to draw a yellow diamond-shaped star
+            function drawDiamondStar(x, y, outerRadius, innerRadius, numPoints, colors) {
+                const angleIncrement = (Math.PI * 2) / numPoints;
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleIncrement;
+                    
+                    ctx.fillStyle = colors[i % colors.length];
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle), y + innerRadius * Math.sin(angle));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle - angleIncrement / 2), y + outerRadius * Math.sin(angle - angleIncrement / 2));
+                    ctx.lineTo(x + innerRadius * Math.cos(angle + angleIncrement), y + innerRadius * Math.sin(angle + angleIncrement));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle + angleIncrement / 2), y + outerRadius * Math.sin(angle + angleIncrement / 2));
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // Function to draw the complex pink and off-white star
+            function drawPinkAndWhiteStar(x, y, outerRadius, innerRadius, numPoints, colors) {
+                const angleIncrement = (Math.PI * 2) / numPoints;
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleIncrement;
+                    
+                    // Draw the off-white outward triangles
+                    ctx.fillStyle = colors[1];
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle - angleIncrement / 2), y + innerRadius * Math.sin(angle - angleIncrement / 2));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle), y + outerRadius * Math.sin(angle));
+                    ctx.lineTo(x + innerRadius * Math.cos(angle + angleIncrement / 2), y + innerRadius * Math.sin(angle + angleIncrement / 2));
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Draw the pink inward triangles
+                    ctx.fillStyle = colors[0];
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle - angleIncrement / 2), y + innerRadius * Math.sin(angle - angleIncrement / 2));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle - angleIncrement / 2), y + outerRadius * Math.sin(angle - angleIncrement / 2));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle), y + outerRadius * Math.sin(angle));
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle + angleIncrement / 2), y + innerRadius * Math.sin(angle + angleIncrement / 2));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle + angleIncrement / 2), y + outerRadius * Math.sin(angle + angleIncrement / 2));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle), y + outerRadius * Math.sin(angle));
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // Function to draw the innermost star of triangles
+            function drawInnerTriangleStar(x, y, outerRadius, innerRadius, numPoints, colors) {
+                const angleIncrement = (Math.PI * 2) / numPoints;
+                for (let i = 0; i < numPoints; i++) {
+                    const angle = i * angleIncrement;
+                    
+                    // Draw the outer pink triangles
+                    ctx.fillStyle = colors[0];
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle), y + innerRadius * Math.sin(angle));
+                    ctx.lineTo(x + outerRadius * Math.cos(angle + angleIncrement / 2), y + outerRadius * Math.sin(angle + angleIncrement / 2));
+                    ctx.lineTo(x + innerRadius * Math.cos(angle + angleIncrement), y + innerRadius * Math.sin(angle + angleIncrement));
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Draw the inner yellow triangles
+                    ctx.fillStyle = colors[1];
+                    ctx.beginPath();
+                    ctx.moveTo(x + innerRadius * Math.cos(angle), y + innerRadius * Math.sin(angle));
+                    ctx.lineTo(x + innerRadius * 0.7 * Math.cos(angle + angleIncrement / 2), y + innerRadius * 0.7 * Math.sin(angle + angleIncrement / 2));
+                    ctx.lineTo(x + innerRadius * Math.cos(angle + angleIncrement), y + innerRadius * Math.sin(angle + angleIncrement));
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+            
+            // Function to draw the central pattern
+            function drawCentralDesign(x, y, outerRadius) {
+                // Purple square
+                drawSquare(x, y, outerRadius * 1.5, '#5C408B');
+                
+                // Orange-red circles on the sides
+                drawCircle(x + outerRadius * 0.8, y, outerRadius * 0.2, '#E25822');
+                drawCircle(x - outerRadius * 0.8, y, outerRadius * 0.2, '#E25822');
+                drawCircle(x, y + outerRadius * 0.8, outerRadius * 0.2, '#E25822');
+                drawCircle(x, y - outerRadius * 0.8, outerRadius * 0.2, '#E25822');
+
+                // Inner off-white square
+                drawSquare(x, y, outerRadius, '#fefae0');
+
+                // Innermost pink square
+                drawSquare(x, y, outerRadius * 0.5, '#FFC0CB');
+
+                // Center dot
+                drawCircle(x, y, outerRadius * 0.1, '#5A3620');
+            }
+
+            // Function to draw a filled circle
+            function drawCircle(x, y, radius, color) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Function to draw a filled square rotated 45 degrees
+            function drawSquare(x, y, size, color) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(Math.PI / 4);
+                ctx.fillStyle = color;
+                ctx.fillRect(-size / 2, -size / 2, size, size);
+                ctx.restore();
+            }
+
+            drawPookalam();
+            
+            // Re-draw on window resize to maintain responsiveness
+            window.addEventListener('resize', () => {
+                const newSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7);
+                canvas.width = newSize;
+                canvas.height = newSize;
+                drawPookalam();
+            });
+        };
+    </script>
+</body>
+</html>
