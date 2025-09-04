@@ -1,0 +1,20 @@
+The JavaScript code uses the HTML5 Canvas API to programmatically draw the Pookalam design. The design is built layer by layer, starting from the outermost ring and moving inward to the center.
+
+Key Components
+drawPookalam(): This is the main function that orchestrates the drawing process. It calls several other functions to draw each distinct layer of the Pookalam. It clears the canvas and calculates the center coordinates and a dynamic size to ensure the design is responsive and fits the screen.
+
+drawDiamondRing(): This function draws the outermost ring of interlocking, diamond-shaped petals. It iterates a specified number of times, drawing a filled path from an inner radius to an outer radius. The colors are cycled from an array, creating a vibrant, multi-colored border.
+
+drawRing(): A simple utility function that draws a solid-colored ring. It achieves this by drawing a larger circle and then "punching out" the center with a second, smaller circle, effectively creating a filled donut shape.
+
+drawDiamondStar(): This function is used for the yellow star pattern. It draws a series of diamond shapes that point both inward and outward, forming a star-like structure.
+
+drawPinkAndWhiteStar(): This is a more complex function that draws a layered star. It first draws an off-white triangle pointing outward at each point, then overlays a pink triangle on top to create the intricate, jagged star shape.
+
+drawInnerTriangleStar(): Similar to the above, this function draws two sets of triangles: an outer set of pink triangles and an inner set of yellow triangles, which meet at the center to form a final star-like pattern before the central design.
+
+drawCentralDesign(): This function handles the innermost layers of the Pookalam. It calls helper functions to draw squares and circles.
+
+drawSquare(): A helper function that draws a filled square. It uses ctx.rotate(Math.PI / 4) to rotate the square by 45 degrees, making it appear as a diamond. The ctx.save() and ctx.restore() methods are used to isolate the rotation transformation so it only applies to the square and doesn't affect subsequent drawings.
+
+window.onload & window.addEventListener('resize', ...): These event listeners ensure the Pookalam is drawn as soon as the page loads and is redrawn whenever the browser window is resized. This makes the design fully responsive.
